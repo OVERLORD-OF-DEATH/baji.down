@@ -1,0 +1,41 @@
+if(!url) return alert('Colle un lien BAJI!');
+ vLoader.style.display='block'; vResult.style.display='none';
+ try{
+  if(url.includes('tiktok.com') || url.includes('vm.tiktok')){
+   let r=await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`);
+   let d=await r.json();
+   if(d.data && d.data.play){ v.src=d.data.play; vDL.href=d.data.play; vResult.style.display='block'; }
+   else throw new Error();
+  }else{
+   let r=await fetch('https://api.cobalt.tools/api/json',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({url:url,videoQuality:'720'})
+   });
+   let d=await r.json();
+   if(d.url){ v.src=d.url; vDL.href=d.url; vResult.style.display='block'; }
+   else throw new Error();
+  }
+ }catch(e){ alert('Lien privé ou invalide. Essaie TikTok public.'); }
+ vLoader.style.display='none';
+}
+
+async function downMusic(){
+ let url=document.getElementById('mlink').value.trim();
+ if(!url) return alert('Colle un lien YouTube!');
+ mLoader.style.display='block'; mResult.style.display='none';
+ try{
+  let r=await fetch('https://api.cobalt.tools/api/json',{
+   method:'POST',
+   headers:{'Content-Type':'application/json','Accept':'application/json'},
+   body:JSON.stringify({url:url,isAudioOnly:true,aFormat:'mp3'})
+  });
+  let d=await r.json();
+  if(d.url){ a.src=d.url; mDL.href=d.url; mResult.style.display='block'; }
+  else alert('Mets un lien YouTube direct');
+ }catch(e){ alert('Erreur MP3'); }
+ mLoader.style.display='none';
+}
+</script>
+</body>
+</html>
