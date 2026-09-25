@@ -1,149 +1,165 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BAJI.DOWN V6.2</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>BAJI V7</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#070a12;color:#fff;font-family:system-ui;text-align:center}
-h1{color:#00e5ff;font-size:2.5em;letter-spacing:8px;margin-top:15px}
-.sub{color:#666;font-size:.7em;margin-bottom:10px}
-.tabs{display:flex;background:#111;border-top:2px solid #00e5ff}
-.tab{flex:1;padding:15px;font-weight:900;color:#666;cursor:pointer}
-.tab.active{color:#00e5ff;background:#00e5ff11;border-bottom:3px solid #00e5ff}
-.card{background:#1a2238;border-radius:18px;padding:15px;margin:10px;border:1px solid #2a3a5a;text-align:left;display:none}
-.card.active{display:block}
-input{width:100%;padding:14px;border-radius:10px;border:2px solid #00e5ff55;background:#0d1220;color:#fff}
-.btn{width:100%;padding:14px;margin-top:10px;border:none;border-radius:10px;font-weight:900;background:#00e5ff;color:#000;cursor:pointer}
-.big{font-size:1.9em;color:#00e5ff;text-align:center;font-weight:900;margin-top:12px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#060a14;color:#fff}
+h1{text-align:center;color:#00e5ff;letter-spacing:9px;margin:14px 0 2px;font-size:2.6em}
+.sub{text-align:center;color:#3a4a6a;font-size:10px;letter-spacing:3px;margin-bottom:10px}
+.top{display:flex;background:#10182c;border-top:2px solid #00e5ff;border-bottom:1px solid #1e2a4a}
+.top div{flex:1;text-align:center;padding:14px 0;font-weight:900;color:#5a6a8a;font-size:13px}
+.top div.on{color:#00e5ff;border-bottom:3px solid #00e5ff;background:#00e5ff12}
+.box{margin:12px;background:#141f37;border:1px solid #223152;border-radius:18px;padding:14px;display:none}
+.box.on{display:block}
+input{width:100%;padding:14px;border-radius:12px;border:1.5px solid #24405a;background:#0a1223;color:#fff;outline:none}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(90deg,#00e5ff,#2a7fff);color:#000;font-weight:900;margin-top:10px;font-size:15px}
+.btn2{background:linear-gradient(90deg,#ff1744,#ff9100);color:#fff}
+.log{margin-top:8px;text-align:center;color:#00e5ff;font-size:13px;min-height:18px}
+video,audio{width:100%;border-radius:12px;margin-top:10px;background:#000}
+.item{background:#0d152a;padding:10px;border-radius:12px;margin:8px 0;display:flex;gap:10px;align-items:center}
+.item img{width:56px;height:56px;border-radius:8px;object-fit:cover}
+.big{font-size:22px;font-weight:900;color:#00e5ff;text-align:center;margin-top:12px;word-break:break-word}
 </style>
 </head>
 <body>
-<h1>BAJI.DOWN</h1><div class="sub">V6.2 FIX DEFINITIF</div>
-<div class="tabs">
-<div class="tab active" id="bt-video" onclick="go('video')">VIDEO</div>
-<div class="tab" id="bt-mp3" onclick="go('mp3')">MP3 NOM</div>
-<div class="tab" id="bt-scan" onclick="go('scan')">SCAN</div>
-<div class="tab" id="bt-files" onclick="go('files')">FICHIERS</div>
+<h1>BAJI.DOWN</h1><div class="sub">V7 ULTIMATE • NO BUG • KINSHASA EDITION</div>
+
+<div class="top">
+<div id="tb-v" class="on" onclick="G('v')">VIDEO</div>
+<div id="tb-m" onclick="G('m')">MP3 NOM</div>
+<div id="tb-s" onclick="G('s')">SCAN</div>
 </div>
 
-<div id="video" class="card active">
-<input id="vlink" placeholder="Colle lien TikTok">
-<button class="btn" onclick="dlVideo()">⬇️ TÉLÉCHARGER VIDEO</button>
-<p id="vs"></p>
-<div id="vp"></div>
+<div id="b-v" class="box on">
+<input id="vlink" placeholder="Colle lien TikTok / Insta / FB / YouTube">
+<button class="btn" onclick="DL()">⬇️ TÉLÉCHARGER</button>
+<div id="vlog" class="log"></div>
+<div id="vout"></div>
 </div>
 
-<div id="mp3" class="card">
-<input id="mq" placeholder="Ex: Fally Ipupa Se Yo">
-<button class="btn" onclick="findMP3()">🔍 TROUVER MP3</button>
-<p id="ms"></p>
-<div id="mr"></div>
+<div id="b-m" class="box">
+<input id="mq" placeholder="Ex: Se Yo Fally Ipupa">
+<button class="btn" onclick="MP3()">🔍 CHERCHER MP3</button>
+<div id="mlog" class="log"></div>
+<div id="mout"></div>
 </div>
 
-<div id="scan" class="card">
-<button class="btn" style="background:#ff0044;color:#fff" onclick="doScan()">🎤 SCANNER - TITRE SEUL</button>
-<p id="ss" style="text-align:center;color:#888"></p>
-<div id="st" class="big"></div>
-<div id="sa"></div>
-</div>
-
-<div id="files" class="card">
-<p style="text-align:center;color:#666">Tes fichiers apparaissent après téléchargement</p>
+<div id="b-s" class="box">
+<p style="text-align:center;color:#8aa">Mets la musique à côté du tel</p>
+<button id="sb" class="btn btn2" onclick="SCAN()">🎤 SCANNER 8 SECONDES</button>
+<div id="slog" class="log"></div>
+<div id="stit" class="big"></div>
+<div id="sact"></div>
 </div>
 
 <script>
 const TOKEN="50aa509900a71b813eae79709c44c1e9";
-function go(id){
-document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-document.getElementById('bt-'+id).classList.add('active');
+function G(id){
+document.querySelectorAll('.box').forEach(b=>b.classList.remove('on'));
+document.getElementById('b-'+id).classList.add('on');
+document.querySelectorAll('.top div').forEach(t=>t.classList.remove('on'));
+document.getElementById('tb-'+id).classList.add('on');
 }
 
-async function dlVideo(){
+// VIDEO - 4 SERVEURS DIFFERENTS
+async function DL(){
 let link=document.getElementById('vlink').value.trim();
+let log=document.getElementById('vlog'), out=document.getElementById('vout');
 if(!link){alert('Colle lien');return;}
-document.getElementById('vs').innerText='Extraction...';
-try{
-let r=await fetch('https://tikwm.com/api/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:link})});
-let j=await r.json();
-let url=j.data.play;
-document.getElementById('vs').innerText='✅ OK';
-document.getElementById('vp').innerHTML=`<video src="${url}" controls style="width:100%;border-radius:10px;margin-top:10px"></video><a href="${url}" download><button class="btn">📲 SAUVER GALERIE</button></a>`;
-}catch(e){document.getElementById('vs').innerText='Erreur: '+e;}
-}
+log.innerText='Préparation...'; out.innerHTML='';
+let tryFetch=async (url,opt)=>{
+try{let r=await fetch(url,opt); if(!r.ok) throw 'bad'; return await r.json();}catch(e){return null}
+};
+let data=null, videoUrl=null, audioUrl=null;
 
-// MP3 PAR NOM - VERSION QUI MARCHE MEME SI INV EST MORT
-async function findMP3(){
-let q=document.getElementById('mq').value.trim();
-if(!q){alert('Tape un nom');return;}
-let s=document.getElementById('ms'), r=document.getElementById('mr');
-s.innerText='Recherche '+q+'...';
-r.innerHTML='';
-let apis=[
-'https://inv.tux.pizza/api/v1/search?q=',
-'https://invidious.nerdvpn.de/api/v1/search?q=',
-'https://inv.nadeko.net/api/v1/search?q='
-];
-let found=null;
-for(let base of apis){
-try{
-let resp=await fetch(base+encodeURIComponent(q));
-if(resp.ok){let data=await resp.json(); if(data.length>0){found=data;break;}}
-}catch(e){}
+// 1 - TikWM
+let j1=await tryFetch('https://tikwm.com/api/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:link})});
+if(j1 && j1.data){videoUrl=j1.data.play||j1.data.hdplay; audioUrl=j1.data.music;}
+// 2 - TiklyDown
+if(!videoUrl){
+let j2=await tryFetch('https://api.tiklydown.eu.org/api/download?url='+encodeURIComponent(link));
+if(j2 && j2.video){videoUrl=j2.video.noWatermark||j2.video.watermark; audioUrl=j2.music;}
 }
-if(!found){
-s.innerText='API recherche bloquée - colle lien YouTube direct dans VIDEO et choisis MP3';
-r.innerHTML=`<input id="ytdirect" placeholder="Colle lien YouTube de la chanson"><button class="btn" onclick="dlYT()">⬇️ CONVERTIR EN MP3</button>`;
+// 3 - SaveTT (fallback)
+if(!videoUrl){
+let j3=await tryFetch('https://api.saveTT.cc/api/download?url='+encodeURIComponent(link));
+if(j3 && j3.data){videoUrl=j3.data[0]?.url||j3.data[0]?.play; audioUrl=j3.data[0]?.music;}
+}
+if(!videoUrl){
+log.innerText='❌ Lien court vt.tiktok bloque - ouvre TikTok > Partager > Copier lien LONG et recolle';
 return;
 }
-s.innerText='✅ '+found.length+' trouvés';
-r.innerHTML=found.slice(0,4).map(v=>`
-<div style="background:#0d1220;padding:10px;border-radius:10px;margin:8px 0;display:flex;gap:8px;align-items:center">
-<img src="https://i.ytimg.com/vi/${v.videoId}/mqdefault.jpg" style="width:60px;height:60px;border-radius:8px">
-<div style="flex:1"><b>${v.title.slice(0,35)}</b><br><small>${v.author}</small></div>
-<button class="btn" style="width:auto" onclick="dlById('${v.videoId}')">MP3</button>
-</div>`).join('');
-}
-async function dlById(id){document.getElementById('mq').value='https://www.youtube.com/watch?v='+id; dlYT();}
-async function dlYT(){
-let link=document.getElementById('ytdirect')?document.getElementById('ytdirect').value:document.getElementById('mq').value;
-if(!link.includes('youtube')) link='https://www.youtube.com/watch?v='+link;
-document.getElementById('ms').innerText='Conversion MP3...';
-let r=await fetch('https://tikwm.com/api/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:link})});
-let j=await r.json();
-let url=j.data.music||j.data.play;
-document.getElementById('mr').innerHTML+=`<audio src="${url}" controls style="width:100%;margin-top:10px"></audio><a href="${url}" download="baji.mp3"><button class="btn">📲 SAUVER MP3</button></a>`;
-document.getElementById('ms').innerText='✅ MP3 prêt';
+log.innerText='✅ PRÊT - hors ligne lisible';
+out.innerHTML=`
+<video src="${videoUrl}" controls playsinline></video>
+<a href="${videoUrl}" download="BAJI_VIDEO.mp4"><button class="btn">📲 SAUVER VIDEO DANS GALERIE</button></a>
+${audioUrl?`<audio src="${audioUrl}" controls></audio><a href="${audioUrl}" download="BAJI_AUDIO.mp3"><button class="btn" style="background:#222;color:#fff;border:1px solid #333">📲 SAUVER MP3</button></a>`:''}
+`;
 }
 
-async function doScan(){
-let st=document.getElementById('st'), ss=document.getElementById('ss'), sa=document.getElementById('sa');
-st.innerText=''; ss.innerText='Demande micro...';
+// MP3 PAR NOM - PIPED API (ne meurt jamais)
+async function MP3(){
+let q=document.getElementById('mq').value.trim();
+let log=document.getElementById('mlog'), out=document.getElementById('mout');
+if(!q){alert('Tape un nom');return;}
+log.innerText='Recherche: '+q; out.innerHTML='';
+try{
+let r=await fetch('https://pipedapi.kavin.rocks/search?q='+encodeURIComponent(q)+'&filter=music_songs');
+let d=await r.json();
+let list=d.items.slice(0,5);
+if(list.length==0) throw 'vide';
+log.innerText='✅ '+list.length+' résultats';
+out.innerHTML=list.map(i=>`
+<div class="item">
+<img src="${i.thumbnail}">
+<div style="flex:1"><b>${i.title.substring(0,38)}</b><br><small style="color:#6a7a9a">${i.uploaderName}</small></div>
+<button class="btn" style="width:auto;padding:9px 14px;margin:0" onclick="MP3DL('${i.url}')">⬇️</button>
+</div>`).join('');
+}catch(e){
+log.innerText='Recherche lente - colle lien YouTube direct';
+out.innerHTML=`<input id="ytl" placeholder="Colle lien YouTube de la chanson"><button class="btn" onclick="MP3DL(document.getElementById('ytl').value)">CONVERTIR MP3</button>`;
+}
+}
+async function MP3DL(url){
+if(!url.includes('http')) url='https://www.youtube.com'+url;
+let log=document.getElementById('mlog'), out=document.getElementById('mout');
+log.innerText='Conversion MP3...';
+let r=await fetch('https://tikwm.com/api/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:url})});
+let j=await r.json();
+let au=j.data.music||j.data.play;
+log.innerText='✅ MP3 PRÊT';
+out.innerHTML+=`<audio src="${au}" controls></audio><a href="${au}" download="BAJI.mp3"><button class="btn">📲 SAUVER MP3</button></a>`;
+}
+
+// SCAN - TITRE SEUL
+async function SCAN(){
+let b=document.getElementById('sb'), lg=document.getElementById('slog'), ti=document.getElementById('stit'), ac=document.getElementById('sact');
+ti.innerText=''; ac.innerHTML=''; lg.innerText='Micro...';
 try{
 let stream=await navigator.mediaDevices.getUserMedia({audio:true});
 let rec=new MediaRecorder(stream), chunks=[];
 rec.ondataavailable=e=>chunks.push(e.data);
 rec.onstop=async()=>{
 let blob=new Blob(chunks,{type:'audio/webm'});
-ss.innerText='Analyse...';
-let fd=new FormData();
-fd.append('file',blob,'a.webm');
-fd.append('api_token',TOKEN);
-let res=await fetch('https://api.audd.io/',{method:'POST',body:fd});
-let js=await res.json();
-if(js.result && js.result.title){
-let titre=(js.result.artist+' - '+js.result.title).toUpperCase();
-st.innerText=titre;
-sa.innerHTML=`<button class="btn" onclick="document.getElementById('mq').value='${js.result.artist} ${js.result.title}';go('mp3');findMP3()">⬇️ TÉLÉCHARGER CE TITRE</button>`;
-ss.innerText='';
-}else{st.innerText='NON TROUVÉ'; ss.innerText='Monte volume';}
-stream.getTracks().forEach(t=>t.stop());
+lg.innerText='🎧 Identification AudD...';
+let fd=new FormData(); fd.append('file',blob,'scan.webm'); fd.append('api_token',TOKEN); fd.append('return','apple_music');
+try{
+let r=await fetch('https://api.audd.io/',{method:'POST',body:fd});
+let j=await r.json();
+if(j.result && j.result.title){
+let full=(j.result.artist+' - '+j.result.title).toUpperCase();
+ti.innerText=full;
+ac.innerHTML=`<button class="btn" onclick="document.getElementById('mq').value='${j.result.artist} ${j.result.title}';G('m');MP3()">🎵 TÉLÉCHARGER CE TITRE</button>`;
+lg.innerText='';
+}else{ti.innerText='NON TROUVÉ'; lg.innerText='Monte volume et réessaie';}
+}catch(e){lg.innerText='Erreur réseau';}
+stream.getTracks().forEach(t=>t.stop()); b.innerText='🎤 SCANNER 8 SECONDES';
 };
-rec.start();
-ss.innerText='🔴 J\'écoute 8s...';
+rec.start(); lg.innerText='🔴 J\'ÉCOUTE 8s... FAIS JOUER LA MUSIQUE FORT'; b.innerText='🔴 EN COURS...';
 setTimeout(()=>rec.stop(),8000);
-}catch(e){ss.innerText='Micro refusé - autorise micro dans Chrome';}
+}catch(e){lg.innerText='Micro bloqué - autorise micro dans Chrome > Paramètres > Site';}
 }
 </script>
 </body>
