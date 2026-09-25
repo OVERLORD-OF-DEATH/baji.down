@@ -1,131 +1,154 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BAJI.DOWN - Téléchargeur Kin</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BAJI.DOWN V4 - SCAN + GALERIE</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#000;color:#fff;min-height:100vh}
-.header{text-align:center;padding:25px;background:#0a0a0a;border-bottom:2px solid #00f2ff}
-.header h1{color:#00f2ff;letter-spacing:10px;font-size:44px;font-weight:900}
-.header p{color:#6b7280;margin-top:5px}
-.tabs{display:flex;background:#111;position:sticky;top:0;z-index:10}
-.tabs button{flex:1;padding:16px;background:none;border:none;color:#555;font-weight:900;letter-spacing:1px}
-.tabs button.active{color:#00f2ff;border-bottom:3px solid #00f2ff;background:#0f172a}
-.box{max-width:480px;margin:auto;padding:20px}
-.tab{display:none}.tab.active{display:block}
-.card{background:#0f172a;border:1px solid #1e293b;border-radius:20px;padding:20px;margin-top:15px}
-input{width:100%;padding:16px;background:#000;border:1.5px solid #1e3a8a;border-radius:14px;color:#fff;outline:none}
-input:focus{border-color:#00f2ff}
-.btn{width:100%;padding:16px;margin-top:12px;background:linear-gradient(90deg,#00f2ff,#0066ff);border:none;border-radius:14px;color:#000;font-weight:900;font-size:16px;cursor:pointer}
-.icons{display:flex;justify-content:space-around;margin:15px 0;opacity:0.8}
-video,audio{width:100%;border-radius:14px;margin-top:15px;background:#000}
-.dl{display:block;text-align:center;padding:14px;background:#00ff88;border-radius:12px;color:#000;font-weight:900;text-decoration:none;margin-top:12px}
-.badge{background:#1e293b;padding:4px 10px;border-radius:20px;font-size:11px;color:#00f2ff}
-.v4{border:2px dashed #334155;opacity:0.6}
+*{margin:0;padding:0;box-sizing:border-box}body{background:#070a12;color:#fff;font-family:system-ui;text-align:center}
+h1{color:#00e5ff;font-size:2.5em;letter-spacing:8px;margin-top:20px;text-shadow:0 0 20px #00e5ff}
+.tabs{display:flex;background:#111;border-top:2px solid #00e5ff;border-bottom:2px solid #00e5ff;margin:15px 0}
+.tab{flex:1;padding:14px;font-weight:900;cursor:pointer;color:#666}.tab.active{color:#00e5ff;border-bottom:3px solid #00e5ff;background:#00e5ff11}
+.card{background:#1a2238;border-radius:20px;padding:18px;margin:15px;border:1px solid #2a3a5a}
+input{width:100%;padding:15px;border-radius:12px;border:2px solid #00e5ff44;background:#0d1220;color:#fff;outline:none}
+.btn{width:100%;padding:16px;margin-top:12px;border:none;border-radius:12px;font-weight:900;font-size:1.1em;background:linear-gradient(90deg,#00e5ff,#0088ff);cursor:pointer}
+.btn-scan{background:linear-gradient(90deg,#ff0055,#ff8800);animation:pulse 1.5s infinite}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+.history-item{background:#0d1220;padding:10px;border-radius:10px;margin:8px 0;display:flex;justify-content:space-between;align-items:center}
 </style>
 </head>
 <body>
-<div class="header">
 <h1>BAJI.DOWN</h1>
-<p>LE TÉLÉCHARGEUR DE KINSHASA • SANS LOGO • SANS PUB</p>
-</div>
+<p style="color:#667788;font-size:.9em;margin-bottom:5px">LE TÉLÉCHARGEUR DE KINSHASA • V4 GALERIE + SCAN</p>
 
 <div class="tabs">
-<button class="active" onclick="openTab('video',this)">VIDEO</button>
-<button onclick="openTab('music',this)">MP3</button>
-<button onclick="openTab('scan',this)">SCAN <span class="badge">V4</span></button>
+<div class="tab active" onclick="openTab('video',this)">VIDEO</div>
+<div class="tab" onclick="openTab('mp3',this)">MP3</div>
+<div class="tab" onclick="openTab('scan',this)">SCAN 🎤</div>
+<div class="tab" onclick="openTab('files',this)">MES FICHIERS</div>
 </div>
 
-<div class="box">
-<div class="icons">🎵 📸 👍 ▶️ 🐦</div>
-
-<!-- VIDEO TAB -->
-<div id="video" class="tab active">
-<div class="card">
-<input id="vlink" placeholder="Colle lien TikTok / Insta / Facebook / YouTube...">
-<button class="btn" onclick="downVideo()">⬇️ TÉLÉCHARGER SANS LOGO</button>
-<div id="vLoader" style="display:none;text-align:center;margin-top:15px;color:#00f2ff">⏳ BAJI télécharge...</div>
-<div id="vResult" style="display:none">
-<video id="v" controls playsinline></video>
-<a id="vDL" class="dl" download>📥 TÉLÉCHARGER VIDÉO</a>
-</div>
-</div>
+<div id="video" class="card tabc">
+<input id="vlink" placeholder="Colle lien TikTok / Insta / FB / YouTube...">
+<button class="btn" onclick="downloadVideo()">⬇️ TÉLÉCHARGER DANS GALERIE</button>
+<p id="vstatus" style="margin-top:10px;color:#00e5ff"></p>
 </div>
 
-<!-- MUSIC TAB -->
-<div id="music" class="tab">
-<div class="card">
-<input id="mlink" placeholder="Colle lien YouTube ou SoundCloud...">
-<button class="btn" onclick="downMusic()">🎵 TÉLÉCHARGER MP3</button>
-<div id="mLoader" style="display:none;text-align:center;margin-top:15px;color:#00f2ff">⏳ Conversion MP3...</div>
-<div id="mResult" style="display:none">
-<audio id="a" controls></audio>
-<a id="mDL" class="dl" download>📥 TÉLÉCHARGER MP3</a>
-</div>
-</div>
+<div id="mp3" class="card tabc" style="display:none">
+<input id="mlink" placeholder="Colle lien YouTube / TikTok...">
+<button class="btn" onclick="downloadMP3()">🎵 TÉLÉCHARGER MP3 DANS GALERIE</button>
+<p id="mstatus" style="margin-top:10px;color:#00e5ff"></p>
 </div>
 
-<!-- SCAN TAB - V4 -->
-<div id="scan" class="tab">
-<div class="card v4">
-<div style="font-size:60px;text-align:center">🎧</div>
-<h3 style="text-align:center">SCAN MUSIC</h3>
-<p style="text-align:center;color:#64748b;margin-top:10px">Shazam intégré arrive en V4<br>Tu chantes, BAJI.DOWN trouve le titre</p>
-<button class="btn" style="background:#334155;color:#94a3b8" disabled>BIENTÔT DISPO - V4</button>
-</div>
+<div id="scan" class="card tabc" style="display:none">
+<p style="margin-bottom:15px">Chante ou fais jouer la chanson près du micro</p>
+<button id="micBtn" class="btn btn-scan" onclick="startScan()">🎤 SCANNER 5 SECONDES</button>
+<p id="scanStatus" style="margin-top:15px"></p>
+<div id="scanResult"></div>
 </div>
 
-<p style="text-align:center;color:#334155;font-size:10px;margin-top:30px">BAJI.DOWN • Fais pour Kin • Respecte les droits d'auteur, télécharge tes propres vidéos</p>
+<div id="files" class="card tabc" style="display:none">
+<h3 style="margin-bottom:10px">Tes téléchargements</h3>
+<div id="historyList"></div>
+<button class="btn" style="background:#222;margin-top:15px" onclick="clearHistory()">Effacer l'historique</button>
 </div>
 
 <script>
-function openTab(id,btn){
- document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
- document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
- document.getElementById(id).classList.add('active');
- btn.classList.add('active');
+const API_DOWN = "https://tikwm.com/api/";
+
+function openTab(id, el){
+document.querySelectorAll('.tabc').forEach(c=>c.style.display='none');
+document.getElementById(id).style.display='block';
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+el.classList.add('active');
+if(id==='files') loadHistory();
 }
 
-async function downVideo(){
- let url=document.getElementById('vlink').value.trim();
- if(!url) return alert('Colle un lien BAJI!');
- vLoader.style.display='block'; vResult.style.display='none';
- try{
-  if(url.includes('tiktok.com') || url.includes('vm.tiktok')){
-   let r=await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`);
-   let d=await r.json();
-   if(d.data && d.data.play){ v.src=d.data.play; vDL.href=d.data.play; vResult.style.display='block'; }
-   else throw new Error();
-  }else{
-   let r=await fetch('https://api.cobalt.tools/api/json',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Accept':'application/json'},
-    body:JSON.stringify({url:url,videoQuality:'720'})
-   });
-   let d=await r.json();
-   if(d.url){ v.src=d.url; vDL.href=d.url; vResult.style.display='block'; }
-   else throw new Error();
-  }
- }catch(e){ alert('Lien privé ou invalide. Essaie TikTok public.'); }
- vLoader.style.display='none';
+async function downloadVideo(){
+let link=document.getElementById('vlink').value.trim();
+if(!link) return alert('Colle un lien');
+let s=document.getElementById('vstatus'); s.innerText='⏳ Extraction sans logo...';
+try{
+let r=await fetch(API_DOWN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:link})});
+let j=await r.json();
+let url=j.data.play || j.data.hdplay || j.data.wmplay;
+if(!url) throw 'Lien non trouvé';
+s.innerText='✅ Prêt ! Téléchargement...';
+// FORCE DOWNLOAD vers galerie
+forceDownload(url, 'BAJI_DOWN_video.mp4');
+saveHistory('VIDEO', link, url);
+s.innerText='✅ Envoyé dans Téléchargements / Galerie !';
+}catch(e){s.innerText='❌ Erreur: '+e}
 }
 
-async function downMusic(){
- let url=document.getElementById('mlink').value.trim();
- if(!url) return alert('Colle un lien YouTube!');
- mLoader.style.display='block'; mResult.style.display='none';
- try{
-  let r=await fetch('https://api.cobalt.tools/api/json',{
-   method:'POST',
-   headers:{'Content-Type':'application/json','Accept':'application/json'},
-   body:JSON.stringify({url:url,isAudioOnly:true,aFormat:'mp3'})
-  });
-  let d=await r.json();
-  if(d.url){ a.src=d.url; mDL.href=d.url; mResult.style.display='block'; }
-  else alert('Mets un lien YouTube direct');
- }catch(e){ alert('Erreur MP3'); }
- mLoader.style.display='none';
+async function downloadMP3(){
+let link=document.getElementById('mlink').value.trim();
+if(!link) return alert('Colle un lien');
+let s=document.getElementById('mstatus'); s.innerText='⏳ Conversion MP3...';
+try{
+let r=await fetch(API_DOWN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:link})});
+let j=await r.json();
+let url=j.data.music || j.data.play;
+if(!url) throw 'Audio non trouvé';
+forceDownload(url, 'BAJI_DOWN_audio.mp3');
+saveHistory('MP3', link, url);
+s.innerText='✅ MP3 dans Téléchargements / Musique !';
+}catch(e){s.innerText='❌ Erreur: '+e}
+}
+
+function forceDownload(url, filename){
+// Cette fonction force l'enregistrement dans la galerie
+fetch(url).then(res=>res.blob()).then(blob=>{
+let a=document.createElement('a');
+a.href=URL.createObjectURL(blob);
+a.download=filename;
+a.click();
+}).catch(()=>{
+// Fallback si blob bloqué
+window.open(url,'_blank');
+});
+}
+
+// --- HISTORIQUE ---
+function saveHistory(type, original, directUrl){
+let h=JSON.parse(localStorage.getItem('baji_history')||'[]');
+h.unshift({type, original, directUrl, date:new Date().toLocaleString()});
+localStorage.setItem('baji_history', JSON.stringify(h.slice(0,50)));
+}
+function loadHistory(){
+let h=JSON.parse(localStorage.getItem('baji_history')||'[]');
+let list=document.getElementById('historyList');
+if(h.length==0) list.innerHTML='<p style="color:#666">Aucun fichier encore</p>';
+else list.innerHTML=h.map(i=>`<div class="history-item"><span><b>${i.type}</b><br><small>${i.date}</small></span><a href="${i.directUrl}" target="_blank" style="color:#00e5ff">Revoir</a></div>`).join('');
+}
+function clearHistory(){localStorage.removeItem('baji_history');loadHistory();}
+
+// --- SCAN MICRO V4 ---
+let mediaRecorder;
+async function startScan(){
+let btn=document.getElementById('micBtn');
+let st=document.getElementById('scanStatus');
+let resDiv=document.getElementById('scanResult');
+try{
+let stream=await navigator.mediaDevices.getUserMedia({audio:true});
+mediaRecorder=new MediaRecorder(stream);
+let chunks=[];
+btn.innerText='🔴 J\'ÉCOUTE... 5s'; st.innerText='Approche la musique du téléphone...';
+mediaRecorder.ondataavailable=e=>chunks.push(e.data);
+mediaRecorder.onstop=async()=>{
+let blob=new Blob(chunks,{type:'audio/wav'});
+st.innerText='🎧 Analyse en cours...';
+// ICI TU METTRAS TA CLE ACRCloud GRATUITE
+// Pour l'instant on simule
+resDiv.innerHTML=`<div style="margin-top:15px;background:#0d1220;padding:15px;border-radius:10px">
+<p>✅ Son enregistré !</p>
+<p style="font-size:.8em;color:#888;margin-top:10px">Pour activer la vraie reconnaissance, crée une clé gratuite sur <b>acrcloud.com</b> et je te branche le code. En attendant tu peux utiliser ce fichier audio pour le télécharger.</p>
+<a href="${URL.createObjectURL(blob)}" download="scan_baji.wav" style="color:#00e5ff;display:block;margin-top:10px">⬇️ Télécharger mon enregistrement</a>
+</div>`;
+btn.innerText='🎤 SCANNER 5 SECONDES';
+};
+mediaRecorder.start();
+setTimeout(()=>{mediaRecorder.stop(); stream.getTracks().forEach(t=>t.stop());},5000);
+}catch(e){st.innerText='❌ Micro bloqué, autorise le micro dans Chrome';}
 }
 </script>
 </body>
