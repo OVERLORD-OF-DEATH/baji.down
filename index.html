@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BAJI V8 HYBRIDE</title>
+<title>BAJI V8.2</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
 body{background:#060a14;color:#fff}
@@ -17,6 +17,7 @@ input{width:100%;padding:14px;border-radius:12px;border:1.5px solid #24405a;back
 .btn{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(90deg,#00e5ff,#2a7fff);color:#000;font-weight:900;margin-top:10px}
 .btn2{background:linear-gradient(90deg,#ff1744,#ff9100);color:#fff}
 .btn3{background:#222;border:1px solid #333;color:#fff}
+.row{display:flex;gap:8px;margin-top:10px}.row a,.row button{flex:1}
 .log{text-align:center;color:#00e5ff;font-size:13px;margin-top:8px;min-height:18px}
 video,audio{width:100%;border-radius:12px;margin-top:10px;background:#000}
 .item{background:#0d152a;padding:10px;border-radius:12px;margin:8px 0;display:flex;gap:10px;align-items:center}
@@ -26,7 +27,7 @@ video,audio{width:100%;border-radius:12px;margin-top:10px;background:#000}
 </style>
 </head>
 <body>
-<h1>BAJI.DOWN</h1><div class="sub">V8 HYBRIDE V5+V7 • STABLE + COMPLET</div>
+<h1>BAJI.DOWN</h1><div class="sub">V8.2 FINAL • VIDEO + MP3 + SCAN + FICHIERS</div>
 
 <div class="top">
 <div id="tb-v" class="on" onclick="G('v')">VIDEO</div>
@@ -36,14 +37,14 @@ video,audio{width:100%;border-radius:12px;margin-top:10px;background:#000}
 </div>
 
 <div id="b-v" class="box on">
-<input id="vlink" placeholder="Colle lien TikTok / Insta / FB / YT">
-<button class="btn" onclick="DL()">⬇️ TÉLÉCHARGER (VIDEO+MP3)</button>
+<input id="vlink" placeholder="Colle lien TikTok / Insta / FB / YouTube">
+<button class="btn" onclick="DL()">⬇️ TÉLÉCHARGER VIDEO</button>
 <div id="vlog" class="log"></div>
 <div id="vout"></div>
 </div>
 
 <div id="b-m" class="box">
-<input id="mq" placeholder="Tape nom: ex Fally Ipupa Se Yo">
+<input id="mq" placeholder="Ex: Fally Ipupa Se Yo">
 <button class="btn" onclick="MP3()">🔍 CHERCHER MP3 PAR NOM</button>
 <div id="mlog" class="log"></div>
 <div id="mout"></div>
@@ -51,7 +52,7 @@ video,audio{width:100%;border-radius:12px;margin-top:10px;background:#000}
 
 <div id="b-s" class="box">
 <p style="text-align:center;color:#8aa">Joue la musique fort près du téléphone</p>
-<button id="sb" class="btn btn2" onclick="SCAN()">🎤 SCANNER - SORT TITRE SEUL</button>
+<button id="sb" class="btn btn2" onclick="SCAN()">🎤 SCANNER TITRE SEUL</button>
 <div id="slog" class="log"></div>
 <div id="stit" class="big"></div>
 <div id="sact"></div>
@@ -60,7 +61,6 @@ video,audio{width:100%;border-radius:12px;margin-top:10px;background:#000}
 <div id="b-f" class="box">
 <div style="display:flex;justify-content:space-between;align-items:center"><h3>📁 OFFLINE</h3><button onclick="clearHist()" style="background:none;border:none;color:#ff4444;font-size:12px">Vider</button></div>
 <div id="fout"></div>
-<p style="color:#556;text-align:center;font-size:11px;margin-top:10px">Tes téléchargements restent ici même sans internet</p>
 </div>
 
 <script>
@@ -81,38 +81,35 @@ function loadHist(){
 let h=JSON.parse(localStorage.getItem('baji_hist')||'[]');
 let o=document.getElementById('fout');
 if(h.length==0) o.innerHTML='<p style="color:#666;text-align:center">Aucun fichier</p>';
-else o.innerHTML=h.map((x,i)=>`
-<div class="hist"><span>📄 ${x.name}<br><small style="color:#666">${x.date}</small></span>
-<a href="${x.url}" download><button class="btn" style="width:auto;padding:6px 10px;margin:0">Ouvrir</button></a></div>`).join('');
+else o.innerHTML=h.map(x=>`<div class="hist"><span>📄 ${x.name}<br><small style="color:#666">${x.date}</small></span><a href="${x.url}" target="_blank"><button class="btn" style="width:auto;padding:6px 10px;margin:0">Ouvrir</button></a></div>`).join('');
 }
-function clearHist(){localStorage.removeItem('baji_hist'); loadHist();}
+function clearHist(){localStorage.removeItem('baji_hist');loadHist();}
 
-// VIDEO - 3 SERVEURS
 async function DL(){
 let link=document.getElementById('vlink').value.trim();
 let log=document.getElementById('vlog'), out=document.getElementById('vout');
 if(!link){alert('Colle lien');return;}
 log.innerText='Connexion...'; out.innerHTML='';
-let videoUrl=null,audioUrl=null;
+let videoUrl=null;
 let tryJson=async(u,o)=>{try{let r=await fetch(u,o); return await r.json();}catch(e){return null}};
 let j1=await tryJson('https://tikwm.com/api/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:link})});
-if(j1?.data){videoUrl=j1.data.play||j1.data.hdplay; audioUrl=j1.data.music;}
+if(j1?.data) videoUrl=j1.data.play||j1.data.hdplay;
 if(!videoUrl){
 let j2=await tryJson('https://api.tiklydown.eu.org/api/download?url='+encodeURIComponent(link));
 if(j2?.video) videoUrl=j2.video.noWatermark||j2.video.watermark;
-if(j2?.music) audioUrl=j2.music.url||j2.music;
 }
-if(!videoUrl){log.innerText='❌ Lien vt.tiktok court - ouvre dans TikTok > Copier lien LONG';return;}
-log.innerText='✅ PRÊT';
+if(!videoUrl){log.innerText='❌ Lien court vt.tiktok - ouvre TikTok > Partager > Copier lien LONG';return;}
+log.innerText='✅ VIDÉO PRÊTE';
 saveHist('VIDEO_'+Date.now(),videoUrl);
 out.innerHTML=`
 <video src="${videoUrl}" controls playsinline></video>
-<a href="${videoUrl}" download="BAJI_VIDEO.mp4"><button class="btn">📲 SAUVER VIDEO GALERIE</button></a>
-${audioUrl?`<audio src="${audioUrl}" controls></audio><a href="${audioUrl}" download="BAJI_MP3.mp3"><button class="btn btn3">📲 SAUVER MP3 SEUL</button></a>`:''}
+<div class="row">
+<a href="${videoUrl}" download="BAJI_VIDEO.mp4"><button class="btn">📲 ENREGISTRER DANS GALERIE</button></a>
+<button class="btn btn3" onclick="shareNow('${videoUrl}','BAJI_VIDEO.mp4')">🔗 PARTAGER</button>
+</div>
 `;
 }
 
-// MP3 NOM - DOUBLE MOTEUR V5
 async function MP3(){
 let q=document.getElementById('mq').value.trim();
 let log=document.getElementById('mlog'), out=document.getElementById('mout');
@@ -120,14 +117,9 @@ if(!q){alert('Tape nom');return;}
 log.innerText='Recherche '+q+'...'; out.innerHTML='';
 let list=null;
 try{let r=await fetch('https://pipedapi.kavin.rocks/search?q='+encodeURIComponent(q)+'&filter=music_songs'); let d=await r.json(); list=d.items.slice(0,5);}catch(e){}
-if(!list){
-try{let r=await fetch('https://inv.tux.pizza/api/v1/search?q='+encodeURIComponent(q)); let d=await r.json(); list=d.slice(0,5).map(x=>({title:x.title,uploaderName:x.author,thumbnail:`https://i.ytimg.com/vi/${x.videoId}/mqdefault.jpg`,url:`/watch?v=${x.videoId}`}));}catch(e){}
-}
-if(!list){log.innerText='APIs lentes - colle lien YouTube direct'; out.innerHTML=`<input id="ytl" placeholder="Lien YouTube"><button class="btn" onclick="MP3DL(document.getElementById('ytl').value)">CONVERTIR</button>`;return;}
-log.innerText='✅ '+list.length+' trouvés - V5';
-out.innerHTML=list.map(i=>`
-<div class="item"><img src="${i.thumbnail}"><div style="flex:1"><b>${i.title.slice(0,35)}</b><br><small style="color:#6a7a9a">${i.uploaderName}</small></div>
-<button class="btn" style="width:auto;padding:8px 12px;margin:0" onclick="MP3DL('${i.url}')">MP3</button></div>`).join('');
+if(!list){log.innerText='Colle lien YouTube direct'; out.innerHTML=`<input id="ytl" placeholder="Lien YouTube"><button class="btn" onclick="MP3DL(document.getElementById('ytl').value)">CONVERTIR</button>`;return;}
+log.innerText='✅ '+list.length+' trouvés';
+out.innerHTML=list.map(i=>`<div class="item"><img src="${i.thumbnail}"><div style="flex:1"><b>${i.title.slice(0,35)}</b><br><small style="color:#6a7a9a">${i.uploaderName}</small></div><button class="btn" style="width:auto;padding:8px 12px;margin:0" onclick="MP3DL('${i.url}')">MP3</button></div>`).join('');
 }
 async function MP3DL(url){
 if(!url.includes('http')) url='https://www.youtube.com'+url;
@@ -136,11 +128,10 @@ log.innerText='Conversion...';
 let r=await fetch('https://tikwm.com/api/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:url})});
 let j=await r.json(); let au=j.data.music||j.data.play;
 saveHist('MP3_'+Date.now(),au);
-log.innerText='✅ MP3 PRÊT OFFLINE';
-out.innerHTML+=`<audio src="${au}" controls></audio><a href="${au}" download="BAJI.mp3"><button class="btn">📲 SAUVER MP3 GALERIE</button></a>`;
+log.innerText='✅ MP3 PRÊT';
+out.innerHTML+=`<audio src="${au}" controls></audio><div class="row"><a href="${au}" download="BAJI.mp3"><button class="btn">📲 GALERIE</button></a><button class="btn btn3" onclick="shareNow('${au}','BAJI.mp3')">🔗 PARTAGER</button></div>`;
 }
 
-// SCAN V5 - TITRE SEUL GROS
 async function SCAN(){
 let b=document.getElementById('sb'), lg=document.getElementById('slog'), ti=document.getElementById('stit'), ac=document.getElementById('sact');
 ti.innerText=''; ac.innerHTML=''; lg.innerText='Micro...';
@@ -148,7 +139,7 @@ let stream=await navigator.mediaDevices.getUserMedia({audio:true});
 let rec=new MediaRecorder(stream), ch=[];
 rec.ondataavailable=e=>ch.push(e.data);
 rec.onstop=async()=>{
-let blob=new Blob(ch,{type:'audio/webm'}); lg.innerText='🎧 AudD analyse...';
+let blob=new Blob(ch,{type:'audio/webm'}); lg.innerText='🎧 Analyse...';
 let fd=new FormData(); fd.append('file',blob,'s.webm'); fd.append('api_token',TOKEN);
 let r=await fetch('https://api.audd.io/',{method:'POST',body:fd});
 let j=await r.json();
@@ -158,10 +149,28 @@ ti.innerText=full;
 ac.innerHTML=`<button class="btn" onclick="document.getElementById('mq').value='${j.result.artist} ${j.result.title}';G('m');MP3()">⬇️ TÉLÉCHARGER CE TITRE</button>`;
 lg.innerText='';
 }else{ti.innerText='NON TROUVÉ'; lg.innerText='Monte volume';}
-stream.getTracks().forEach(t=>t.stop()); b.innerText='🎤 SCANNER 8 SECONDES';
+stream.getTracks().forEach(t=>t.stop()); b.innerText='🎤 SCANNER TITRE SEUL';
 };
 rec.start(); lg.innerText='🔴 8 SEC - JOUE FORT'; b.innerText='🔴 ÉCOUTE...';
 setTimeout(()=>rec.stop(),8000);
+}
+
+async function shareNow(url,name){
+if(navigator.share){
+try{
+let res=await fetch(url);
+let blob=await res.blob();
+let file=new File([blob], name, {type: blob.type});
+if(navigator.canShare && navigator.canShare({files:[file]})){
+await navigator.share({files:[file], title: name});
+}else{
+await navigator.share({title:name, text:'Via BAJI.DOWN', url:url});
+}
+}catch(e){ window.open(url,'_blank'); }
+}else{
+navigator.clipboard.writeText(url);
+alert('Lien copié - partage non supporté');
+}
 }
 loadHist();
 </script>
