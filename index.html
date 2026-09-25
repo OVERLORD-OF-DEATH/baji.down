@@ -2,41 +2,42 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BAJI.DOWN V6 FINAL</title>
+<title>BAJI.DOWN V6.1</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}body{background:#070a12;color:#fff;font-family:system-ui;text-align:center}
-h1{color:#00e5ff;font-size:2.8em;letter-spacing:10px;margin-top:20px;text-shadow:0 0 20px #00e5ff}
-.sub{color:#444;font-size:.7em;letter-spacing:3px;margin-bottom:12px}
+h1{color:#00e5ff;font-size:2.6em;letter-spacing:8px;margin-top:18px}
+.sub{color:#555;font-size:.7em;letter-spacing:2px;margin-bottom:10px}
 .tabs{display:flex;background:#111;border-top:2px solid #00e5ff;border-bottom:2px solid #00e5ff}
-.tab{flex:1;padding:13px;font-weight:900;cursor:pointer;color:#666;font-size:.8em}.tab.active{color:#00e5ff;border-bottom:3px solid #00e5ff;background:#00e5ff11}
+.tab{flex:1;padding:14px;font-weight:900;cursor:pointer;color:#666;font-size:.8em;-webkit-tap-highlight-color:transparent}
+.tab.active{color:#00e5ff;border-bottom:3px solid #00e5ff;background:#00e5ff11}
 .card{background:#1a2238;border-radius:20px;padding:16px;margin:12px;border:1px solid #2a3a5a;text-align:left}
 input{width:100%;padding:15px;border-radius:12px;border:2px solid #00e5ff44;background:#0d1220;color:#fff;outline:none}
 .btn{width:100%;padding:15px;margin-top:10px;border:none;border-radius:12px;font-weight:900;background:linear-gradient(90deg,#00e5ff,#0088ff);cursor:pointer;color:#000}
-.bigTitle{font-size:2em;font-weight:900;color:#00e5ff;text-align:center;margin-top:18px;word-break:break-word}
+.bigTitle{font-size:2em;font-weight:900;color:#00e5ff;text-align:center;margin-top:15px}
 .result{background:#0d1220;padding:12px;border-radius:12px;margin:8px 0;display:flex;gap:10px;align-items:center}
-.result img{width:60px;height:60px;border-radius:8px}
-video{width:100%;border-radius:12px;margin-top:10px;background:#000}
+.result img{width:60px;height:60px;border-radius:8px;object-fit:cover}
+video, audio{width:100%;border-radius:12px;margin-top:10px;background:#000}
 </style>
 </head>
 <body>
-<h1>BAJI.DOWN</h1><div class="sub">V6 FINAL • SCAN + MP3 NOM + OFFLINE</div>
+<h1>BAJI.DOWN</h1><div class="sub">V6.1 FIX - TITRE SEUL + MP3 NOM</div>
 
 <div class="tabs">
-<div class="tab active" onclick="openTab('video',this)">VIDEO</div>
-<div class="tab" onclick="openTab('mp3',this)">MP3 NOM</div>
-<div class="tab" onclick="openTab('scan',this)">SCAN 🎤</div>
-<div class="tab" onclick="openTab('files',this)">FICHIERS</div>
+<div id="t-video" class="tab active" onclick="openTab('video')">VIDEO</div>
+<div id="t-mp3" class="tab" onclick="openTab('mp3')">MP3 NOM</div>
+<div id="t-scan" class="tab" onclick="openTab('scan')">SCAN 🎤</div>
+<div id="t-files" class="tab" onclick="openTab('files')">FICHIERS</div>
 </div>
 
 <div id="video" class="card tabc">
 <input id="vlink" placeholder="Colle lien TikTok / Insta / FB...">
-<button class="btn" onclick="downloadVideo()">⬇️ TÉLÉCHARGER DANS GALERIE</button>
+<button class="btn" onclick="downloadVideo()">⬇️ TÉLÉCHARGER</button>
 <p id="vstatus" style="text-align:center;color:#00e5ff;margin-top:8px"></p>
 <div id="vpreview"></div>
 </div>
 
 <div id="mp3" class="card tabc" style="display:none">
-<input id="mquery" placeholder="Tape le nom: ex Fally Ipupa Se Yo">
+<input id="mquery" placeholder="Tape nom: ex Fally Ipupa Se Yo">
 <button class="btn" onclick="searchMP3()">🔍 RECHERCHER</button>
 <p id="mstatus" style="text-align:center;color:#00e5ff;margin-top:8px"></p>
 <div id="mresults"></div>
@@ -44,100 +45,58 @@ video{width:100%;border-radius:12px;margin-top:10px;background:#000}
 
 <div id="scan" class="card tabc" style="display:none">
 <p style="text-align:center">Joue la musique près du téléphone</p>
-<button id="micBtn" class="btn" style="background:linear-gradient(90deg,#ff0055,#ff8800);color:#fff" onclick="startScan()">🎤 SCANNER 8 SECONDES</button>
+<button id="micBtn" class="btn" style="background:linear-gradient(90deg,#ff0055,#ff8800);color:#fff" onclick="startScan()">🎤 SCANNER 8 SEC</button>
 <p id="scanStatus" style="text-align:center;color:#888;margin-top:8px"></p>
 <div id="scanTitle" class="bigTitle"></div>
-<div id="scanAction" style="text-align:center;margin-top:12px"></div>
+<div id="scanAction" style="text-align:center;margin-top:10px"></div>
 </div>
 
-<div id="files" class="card tabc" style="display:none"><div id="historyList"></div></div>
+<div id="files" class="card tabc" style="display:none">
+<p style="color:#666;text-align:center">Historique hors ligne bientôt</p>
+</div>
 
 <script>
 const TIKWM="https://tikwm.com/api/";
 const INV="https://inv.tux.pizza/api/v1/search?q=";
 const AUDD_TOKEN="50aa509900a71b813eae79709c44c1e9";
 
-function openTab(id,el){
+// FIX TABS - NE BLOQUE PLUS
+function openTab(id){
 document.querySelectorAll('.tabc').forEach(c=>c.style.display='none');
-document.getElementById(id).style.display='block';
+let target=document.getElementById(id);
+if(target) target.style.display='block';
 document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-el.classList.add('active');
+let tabBtn=document.getElementById('t-'+id);
+if(tabBtn) tabBtn.classList.add('active');
 }
 
 async function downloadVideo(){
 let link=document.getElementById('vlink').value.trim();
 if(!link) return alert('Colle un lien');
 let s=document.getElementById('vstatus'), p=document.getElementById('vpreview');
-s.innerText='Extraction...';
+s.innerText='Extraction...'; p.innerHTML='';
+try{
 let r=await fetch(TIKWM,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:link})});
 let j=await r.json();
 let url=j.data.play||j.data.hdplay;
-let blob=await fetch(url).then(r=>r.blob());
-let bUrl=URL.createObjectURL(blob);
-s.innerText='✅ Prêt hors ligne - lisible sans internet';
-p.innerHTML=`<video src="${bUrl}" controls playsinline></video><button class="btn" onclick="forceDL('${url}','BAJI.mp4')">📲 ENREGISTRER DANS GALERIE</button>`;
+s.innerText='✅ Prêt';
+p.innerHTML=`<video src="${url}" controls playsinline></video><a href="${url}" download="BAJI.mp4"><button class="btn">📲 ENREGISTRER DANS GALERIE</button></a>`;
+}catch(e){s.innerText='❌ Erreur lien';}
 }
-function forceDL(url,name){let a=document.createElement('a');a.href=url;a.download=name;a.click();}
 
 async function searchMP3(){
 let q=document.getElementById('mquery').value.trim();
-let s=document.getElementById('mstatus'), res=document.getElementById('mresults');
 if(!q) return alert('Tape un nom');
-s.innerText='Recherche de '+q+'...'; res.innerHTML='';
+let s=document.getElementById('mstatus'), res=document.getElementById('mresults');
+s.innerText='Recherche '+q+'...'; res.innerHTML='';
+try{
 let r=await fetch(INV+encodeURIComponent(q));
 let data=await r.json();
-let videos=data.slice(0,5);
-s.innerText='✅ '+videos.length+' trouvés';
-res.innerHTML=videos.map(v=>`
-<div class="result"><img src="https://i.ytimg.com/vi/${v.videoId}/mqdefault.jpg"><div style="flex:1"><b>${v.title}</b><br><small style="color:#666">${v.author}</small></div><button class="btn" style="width:auto;padding:8px 12px" onclick="dlById('${v.videoId}')">⬇️</button></div>`).join('');
-}
-async function dlById(videoId){
-let link="https://www.youtube.com/watch?v="+videoId;
-document.getElementById('mstatus').innerText='Conversion MP3...';
-let r=await fetch(TIKWM,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:link})});
-let j=await r.json();
-let url=j.data.music||j.data.play;
-let blob=await fetch(url).then(r=>r.blob());
-let bUrl=URL.createObjectURL(blob);
-document.getElementById('mresults').innerHTML+=`<audio src="${bUrl}" controls style="width:100%;margin-top:10px"></audio><button class="btn" onclick="forceDL('${url}','BAJI.mp3')">📲 ENREGISTRER DANS GALERIE</button>`;
-document.getElementById('mstatus').innerText='✅ Prêt hors ligne';
-}
-
-// SCAN FINAL - SORT SEULEMENT LE TITRE
-async function startScan(){
-let btn=document.getElementById('micBtn'), st=document.getElementById('scanStatus'), titleDiv=document.getElementById('scanTitle'), act=document.getElementById('scanAction');
-titleDiv.innerText=''; act.innerHTML='';
-btn.innerText='🔴 ÉCOUTE 8s...'; st.innerText='Enregistrement...';
-let stream=await navigator.mediaDevices.getUserMedia({audio:true});
-let rec=new MediaRecorder(stream), chunks=[];
-rec.ondataavailable=e=>chunks.push(e.data);
-rec.onstop=async()=>{
-let blob=new Blob(chunks,{type:'audio/webm'});
-st.innerText='🎧 Identification...';
-let form=new FormData();
-form.append('file', blob, 'scan.webm');
-form.append('api_token', AUDD_TOKEN);
-form.append('return','apple_music,spotify');
-try{
-let resp=await fetch('https://api.audd.io/',{method:'POST',body:form});
-let json=await resp.json();
-if(json.result && json.result.title){
-let titre = (json.result.artist + ' - ' + json.result.title).toUpperCase();
-titleDiv.innerText = titre;
-act.innerHTML=`<button class="btn" onclick="document.getElementById('mquery').value='${json.result.artist} ${json.result.title}';openTab('mp3',document.querySelectorAll('.tab')[1]);searchMP3()">🎵 TÉLÉCHARGER CE TITRE</button>`;
-st.innerText='';
-}else{
-titleDiv.innerText='TITRE NON TROUVÉ - RÉESSAIE PLUS FORT';
-st.innerText='Rapproche le son du micro';
-}
-}catch(e){titleDiv.innerText='ERREUR RÉSEAU'; st.innerText=e;}
-stream.getTracks().forEach(t=>t.stop());
-btn.innerText='🎤 SCANNER 8 SECONDES';
-};
-rec.start();
-setTimeout(()=>rec.stop(),8000);
-}
-}
-</script>
-</body>
-</html>
+s.innerText='✅ '+data.length+' résultats';
+res.innerHTML=data.slice(0,5).map(v=>`
+<div class="result">
+<img src="https://i.ytimg.com/vi/${v.videoId}/mqdefault.jpg">
+<div style="flex:1"><b>${v.title.substring(0,40)}</b><br><small style="color:#666">${v.author}</small></div>
+<button class="btn" style="width:auto;padding:8px 12px" onclick="dlById('${v.videoId}')">⬇️</button>
+</div>`).join('');
+}catch(e){s.innerText='❌ Réessaie -
